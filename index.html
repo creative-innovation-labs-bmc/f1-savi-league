@@ -1,0 +1,200 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>F1 SAVI Flourish Viewer</title>
+  <style>
+    :root {
+      --bg: #0f1115;
+      --panel: #171a21;
+      --panel-2: #1f2430;
+      --text: #eef2f7;
+      --muted: #aab4c3;
+      --accent: #b6d433;
+      --line: #2d3442;
+    }
+    * { box-sizing: border-box; }
+    html, body { height: 100%; }
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--text);
+      font: 16px/1.4 Arial, Helvetica, sans-serif;
+    }
+    .shell {
+      min-height: 100vh;
+      display: grid;
+      grid-template-rows: auto auto 1fr;
+    }
+    .topbar {
+      padding: 16px 20px 10px;
+      border-bottom: 1px solid var(--line);
+      background: linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0));
+    }
+    h1 {
+      margin: 0 0 6px;
+      font-size: 26px;
+      line-height: 1.15;
+    }
+    .sub {
+      color: var(--muted);
+      font-size: 14px;
+    }
+    .controls {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      padding: 14px 20px;
+      border-bottom: 1px solid var(--line);
+      background: var(--panel);
+      align-items: center;
+    }
+    .group {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      align-items: center;
+    }
+    .label {
+      color: var(--muted);
+      font-size: 13px;
+      margin-right: 4px;
+    }
+    button, a.btn {
+      appearance: none;
+      border: 1px solid var(--line);
+      background: var(--panel-2);
+      color: var(--text);
+      padding: 10px 14px;
+      border-radius: 10px;
+      cursor: pointer;
+      text-decoration: none;
+      font-size: 14px;
+      line-height: 1;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 40px;
+    }
+    button:hover, a.btn:hover {
+      border-color: #465167;
+      background: #262d3c;
+    }
+    button.active {
+      background: var(--accent);
+      color: #10130b;
+      border-color: #d2ea70;
+      font-weight: 700;
+    }
+    .viewer-wrap {
+      padding: 12px;
+      width: 100%;
+    }
+    .viewer {
+      width: min(99vw, 2400px);
+      margin: 0 auto;
+      background: #0a0c10;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      overflow: hidden;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.35);
+    }
+    iframe {
+      display: block;
+      width: 100%;
+      border: 0;
+      background: white;
+    }
+    .footer {
+      color: var(--muted);
+      font-size: 13px;
+      padding: 0 20px 18px;
+    }
+    @media (max-width: 740px) {
+      h1 { font-size: 22px; }
+      .controls { padding: 12px; }
+      .topbar { padding: 14px 12px 10px; }
+      .footer { padding: 0 12px 16px; }
+      button, a.btn { padding: 9px 12px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="shell">
+    <div class="topbar">
+      <h1>F1 SAVI Flourish Viewer</h1>
+      <div class="sub">Wrapper page for your two Flourish charts, using a much larger viewing area and adjustable height.</div>
+    </div>
+
+    <div class="controls">
+      <div class="group" aria-label="Chart selector">
+        <span class="label">Chart</span>
+        <button id="btn-races" class="active" type="button">Races</button>
+        <button id="btn-leaderboard" type="button">Leaderboard</button>
+      </div>
+
+      <div class="group" aria-label="Height selector">
+        <span class="label">Height</span>
+        
+        <button class="hbtn active" data-height="1000" type="button">1000px</button>
+        <button class="hbtn" data-height="1400" type="button">1400px</button>
+        <button class="hbtn" data-height="1800" type="button">1800px</button>
+      </div>
+
+      <div class="group" aria-label="Direct links">
+        <span class="label">Open direct</span>
+        <a class="btn" href="https://public.flourish.studio/visualisation/23536150/" target="_blank" rel="noopener">Races page</a>
+        <a class="btn" href="https://public.flourish.studio/visualisation/23537908/" target="_blank" rel="noopener">Leaderboard page</a>
+      </div>
+    </div>
+
+    <div class="viewer-wrap">
+      <div class="viewer">
+        <iframe
+          id="chart-frame"
+          title="F1 SAVI Flourish chart"
+          src="https://public.flourish.studio/visualisation/23536150/embed"
+          loading="lazy"
+          referrerpolicy="strict-origin-when-cross-origin"
+          style="height: 1000px;">
+        </iframe>
+      </div>
+    </div>
+
+    <div class="footer">
+      Tip: press F11 for browser full screen. Start at 1000px, then move up only if you need more room.</div>
+  </div>
+
+  <script>
+    const frame = document.getElementById('chart-frame');
+    const btnRaces = document.getElementById('btn-races');
+    const btnLeaderboard = document.getElementById('btn-leaderboard');
+    const heightButtons = document.querySelectorAll('.hbtn');
+
+    const urls = {
+      races: 'https://public.flourish.studio/visualisation/23536150/embed',
+      leaderboard: 'https://public.flourish.studio/visualisation/23537908/embed'
+    };
+
+    function setChart(name) {
+      frame.src = urls[name];
+      btnRaces.classList.toggle('active', name === 'races');
+      btnLeaderboard.classList.toggle('active', name === 'leaderboard');
+    }
+
+    function setHeight(px) {
+      frame.style.height = px + 'px';
+      heightButtons.forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.height === String(px));
+      });
+    }
+
+    btnRaces.addEventListener('click', () => setChart('races'));
+    btnLeaderboard.addEventListener('click', () => setChart('leaderboard'));
+    heightButtons.forEach(btn => {
+      btn.addEventListener('click', () => setHeight(btn.dataset.height));
+    });
+  </script>
+</body>
+</html>
