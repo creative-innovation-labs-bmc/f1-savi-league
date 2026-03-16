@@ -1,5 +1,9 @@
-# F1 SAVI Flourish Viewer v3
+# F1 SAVI League Graph Viewer
 
-- Default height is 1000px
-- Height options are 1000px, 1400px, 1800px
-- Removed 2200px and 2600px
+Changes:
+- Renamed to F1 SAVI League Graph Viewer
+- Updated subtitle text
+- Added logo at top left
+- Reduced buffers and extra padding
+- Tightened viewer width to reduce horizontal overflow
+- Height options remain 1000px, 1400px, 1800px
